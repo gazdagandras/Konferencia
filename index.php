@@ -1,6 +1,8 @@
 <?php
 session_start();    // felhasználó kezeléshez kell, pont itt!!!
 
+$uzenetek = '';
+
 if (isset($_POST['nev'])) {
 //    echo '<pre>';
 //    print_r($_POST);
@@ -44,10 +46,10 @@ if (isset($_POST['nev'])) {
         }
         
         // Minden ok, regisztráltunk:
-        echo 'Sikeres regisztráció!';
+        $uzenetek .= '<p style="color: green"><b>Sikeres regisztráció!</b></p>';
     } else {
         // A név nincs kitöltve, hiba:
-        echo 'A név kitöltése kötelező!';
+        $uzenetek .=  '<p style="color: red"><b>A név kitöltése kötelező!</b></p>';
     }
 
     // Adatbázis kapcsolat bezárása:
@@ -62,6 +64,10 @@ if (isset($_POST['nev'])) {
     <body>
         <h1>Konferencia regisztráció</h1>
 
+        <?php
+        echo $uzenetek;
+        ?>
+        
         <form action="index.php" method="post" enctype="multipart/form-data">
 
             <fieldset>
