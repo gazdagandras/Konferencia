@@ -21,15 +21,21 @@ if (isset($_POST['nev'])) {
     $varos = $_POST['varos'];
     $szuletes = $_POST['szuletes'];
     $megjegyzes = $_POST['megjegyzes'];
-    $reggeli = $_POST['reggeli'];
-    $ebed = $_POST['ebed'];
-    $vacsora = $_POST['vacsora'];
+    
+    $reggeli = (isset($_POST['reggeli']))?1:0;
+    $ebed = (isset($_POST['ebed']))?1:0;
+    $vacsora = (isset($_POST['vacsora']))?1:0;
     
     // TODO: fájl feltöltése
     $profilkep = $_FILES['profilkep']['name'];
+    move_uploaded_file($_FILES['profilkep']['tmp_name'], 'profilkepek/'.$profilkep);
     
     // SQL lekérdezés futtatása:
-    $sql = "INSERT INTO `regisztraciok` (nev,neme,varos) VALUES ('$nev','$neme','$varos')";
+    $sql = "INSERT INTO `regisztraciok` "
+            . "(nev,neme,varos,szulido,megjegyzes,reggeli,ebed,vacsora,profilkep) VALUES "
+            . "('$nev','$neme','$varos','$szuletes','$megjegyzes',$reggeli,$ebed,"
+            . "$vacsora,'$profilkep')";
+    //echo $sql;
     mysqli_query($db, $sql);
     if (mysqli_errno($db)) {
         die(mysqli_error($db));
@@ -58,8 +64,8 @@ if (isset($_POST['nev'])) {
                 <br>
 
                 <label>Neme:</label>
-                <input type="radio" name="neme" value="ferfi" checked>Férfi
-                <input type="radio" name="neme" value="no">Nő
+                <input type="radio" name="neme" value="férfi" checked>Férfi
+                <input type="radio" name="neme" value="nő">Nő
                 <br>
 
                 <label>Város:</label>
@@ -72,11 +78,11 @@ if (isset($_POST['nev'])) {
 //                        }
 ?>
                     <option value=""></option>
-                    <option value="dombovar">Dombóvár</option>
-                    <option value="kaposvar">Kaposvár</option>
-                    <option value="pecs">Pécs</option>
-                    <option value="zselickislak">Zselickislak</option>
-                    <option value="egyeb">Egyéb</option>
+                    <option value="Dombóvár">Dombóvár</option>
+                    <option value="Kaposvár">Kaposvár</option>
+                    <option value="Pécs">Pécs</option>
+                    <option value="Zselickislak">Zselickislak</option>
+                    <option value="Egyéb">Egyéb</option>
                 </select>
                 <br>
 
