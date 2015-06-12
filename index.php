@@ -6,44 +6,52 @@ if (isset($_POST['nev'])) {
     print_r($_POST);
     print_r($_FILES);
     echo '</pre>';
-    
+
     // Adatbázis kapcsolódás:
     $db = mysqli_connect('localhost', 'root', '', 'konferencia');
     if (mysqli_connect_errno()) {
         die(mysqli_connect_error());
     }
-    
+
     mysqli_set_charset($db, 'utf8');
-    
+
     // Űrlapadatok kigyűjtése:
-    $nev = $_POST['nev'];
-    $neme = $_POST['neme'];
-    $varos = $_POST['varos'];
-    $szuletes = $_POST['szuletes'];
-    $megjegyzes = $_POST['megjegyzes'];
-    
-    $reggeli = (isset($_POST['reggeli']))?1:0;
-    $ebed = (isset($_POST['ebed']))?1:0;
-    $vacsora = (isset($_POST['vacsora']))?1:0;
-    
-    // TODO: fájl feltöltése
-    $profilkep = $_FILES['profilkep']['name'];
-    move_uploaded_file($_FILES['profilkep']['tmp_name'], 'profilkepek/'.$profilkep);
-    
-    // SQL lekérdezés futtatása:
-    $sql = "INSERT INTO `regisztraciok` "
-            . "(nev,neme,varos,szulido,megjegyzes,reggeli,ebed,vacsora,profilkep) VALUES "
-            . "('$nev','$neme','$varos','$szuletes','$megjegyzes',$reggeli,$ebed,"
-            . "$vacsora,'$profilkep')";
-    //echo $sql;
-    mysqli_query($db, $sql);
-    if (mysqli_errno($db)) {
-        die(mysqli_error($db));
+    $nev = mysqli_real_escape_string($db, $_POST['nev']);
+    $neme = mysqli_real_escape_string($db, $_POST['neme']);
+    $varos = mysqli_real_escape_string($db, $_POST['varos']);
+    $szuletes = mysqli_real_escape_string($db, $_POST['szuletes']);
+    $megjegyzes = mysqli_real_escape_string($db, $_POST['megjegyzes']);
+
+    $reggeli = (isset($_POST['reggeli'])) ? 1 : 0;
+    $ebed = (isset($_POST['ebed'])) ? 1 : 0;
+    $vacsora = (isset($_POST['vacsora'])) ? 1 : 0;
+
+    // Validálás: csak akkor dolgozunk, ha minden ok!
+    if (strlen($nev) > 0) { // a név nem üres
+        // TODO: fájl feltöltése
+        $profilkep = $_FILES['profilkep']['name'];
+        move_uploaded_file($_FILES['profilkep']['tmp_name'], 'profilkepek/' . $profilkep);
+
+        // SQL lekérdezés futtatása:
+        $sql = "INSERT INTO `regisztraciok` "
+                . "(nev,neme,varos,szulido,megjegyzes,reggeli,ebed,vacsora,profilkep) VALUES "
+                . "('$nev','$neme','$varos','$szuletes','$megjegyzes',$reggeli,$ebed,"
+                . "$vacsora,'$profilkep')";
+        echo $sql;
+        mysqli_query($db, $sql);
+        if (mysqli_errno($db)) {
+            die(mysqli_error($db));
+        }
+        
+        // Minden ok, regisztráltunk:
+        echo 'Sikeres regisztráció!';
+    } else {
+        // A név nincs kitöltve, hiba:
+        echo 'A név kitöltése kötelező!';
     }
-    
+
     // Adatbázis kapcsolat bezárása:
     mysqli_close($db);
-    
 }
 ?><!DOCTYPE html>
 <html>
