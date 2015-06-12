@@ -6,6 +6,9 @@ if (isset($_POST['nev'])) {
     print_r($_POST);
     print_r($_FILES);
     echo '</pre>';
+    
+    
+    
 }
 ?><!DOCTYPE html>
 <html>
