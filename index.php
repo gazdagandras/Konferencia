@@ -7,7 +7,36 @@ if (isset($_POST['nev'])) {
     print_r($_FILES);
     echo '</pre>';
     
+    // Adatbázis kapcsolódás:
+    $db = mysqli_connect('localhost', 'root', '', 'konferencia');
+    if (mysqli_connect_errno()) {
+        die(mysqli_connect_error());
+    }
     
+    mysqli_set_charset($db, 'utf8');
+    
+    // Űrlapadatok kigyűjtése:
+    $nev = $_POST['nev'];
+    $neme = $_POST['neme'];
+    $varos = $_POST['varos'];
+    $szuletes = $_POST['szuletes'];
+    $megjegyzes = $_POST['megjegyzes'];
+    $reggeli = $_POST['reggeli'];
+    $ebed = $_POST['ebed'];
+    $vacsora = $_POST['vacsora'];
+    
+    // TODO: fájl feltöltése
+    $profilkep = $_FILES['profilkep']['name'];
+    
+    // SQL lekérdezés futtatása:
+    $sql = "INSERT INTO `regisztraciok` (nev,neme,varos) VALUES ('$nev','$neme','$varos')";
+    mysqli_query($db, $sql);
+    if (mysqli_errno($db)) {
+        die(mysqli_error($db));
+    }
+    
+    // Adatbázis kapcsolat bezárása:
+    mysqli_close($db);
     
 }
 ?><!DOCTYPE html>
